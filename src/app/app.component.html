@@ -16,9 +16,4 @@
     <span *ngIf="todo.isCompleted"><del>{{ todo.title }}</del></span>
     <span (click)="onRemove(todo.id)">Remove!</span>
   </li>
-  <li>
-    <input type="checkbox" name="isCompleted" checked="checked">
-    <span><del>What’s been done</del></span>
-    <span>Remove!</span>
-  </li>
 </ul>
