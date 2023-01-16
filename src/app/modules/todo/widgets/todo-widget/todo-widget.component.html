@@ -1,0 +1,20 @@
+<p>todo-widget works!</p>
+<form action="#" (ngSubmit)="onCreate()">
+  <input type="text" name="title" [(ngModel)]="title">
+  <button [disabled]="!title">Adding new record</button>
+</form>
+
+<ul>
+  <li *ngFor="let todo of todoList">
+    <!-- {{ todo | json }} -->
+    <input
+      type="checkbox"
+      name="isCompleted"
+      [checked]="todo.isCompleted"
+      (change)="onComplete(todo)"
+      >
+    <span *ngIf="!todo.isCompleted">{{ todo.title }}</span>
+    <span *ngIf="todo.isCompleted"><del>{{ todo.title }}</del></span>
+    <span (click)="onRemove(todo.id)">Remove!</span>
+  </li>
+</ul>

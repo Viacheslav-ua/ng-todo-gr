@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http'
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+// import { HttpClientModule } from '@angular/common/http'
 
-import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { AppComponent } from './app.component'
+// import { FormsModule } from '@angular/forms'
+import { TodoModule } from './modules/todo/todo.module'
 
 @NgModule({
   declarations: [
@@ -11,8 +12,9 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
-    FormsModule,
+    // HttpClientModule,
+    // FormsModule,
+    TodoModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
