@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, DoCheck } from '@angular/co
 import {HttpClient} from '@angular/common/http'
 import { ITodo } from './todo';
 import { ChangeDetectorRef } from '@angular/core';
+import { BACKEND_BASE_DOMAIN } from 'src/env';
 
 @Component({
   selector: 'app-root',
@@ -24,16 +25,14 @@ export class AppComponent implements OnInit, DoCheck {
 
   ngOnInit(): void {
     console.log('ngDoInit');
-    this.httpClient.get<ITodo[]>('http://localhost:3000/rest/todo')
+    this.httpClient.get<ITodo[]>(BACKEND_BASE_DOMAIN + 'todo')
       .subscribe(todoList => {
         this.todoList = todoList
       })
   }
 
    ngDoCheck(): void {
-    console.log('ngDoCheck');
     if (this.todoList?.length !== this.length) {
-      console.log('HAS CHANGED')
       this.cdr.markForCheck()
       this.length = this.todoList.length
     }
@@ -43,7 +42,7 @@ export class AppComponent implements OnInit, DoCheck {
   onCreate() {
     if (this.title) {
       this.httpClient.post<ITodo>(
-        'http://localhost:3000/rest/todo',
+        BACKEND_BASE_DOMAIN + 'todo',
         { title: this.title }
       )
         .subscribe({
@@ -54,13 +53,13 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   onRemove(id: number) {
-    this.httpClient.delete<void>('http://localhost:3000/rest/todo/' + id)
+    this.httpClient.delete<void>(BACKEND_BASE_DOMAIN + 'todo/' + id)
       .subscribe(() => this.todoList = this.todoList.filter(todo => todo.id !== id))
   }
 
   onComplete(todo: ITodo) {
     this.httpClient.patch<ITodo>(
-      'http://localhost:3000/rest/todo/' + todo.id,
+    BACKEND_BASE_DOMAIN + 'todo/' + todo.id,
       { isCompleted: !todo.isCompleted }
     )
       .subscribe((updatedTodo) => {
