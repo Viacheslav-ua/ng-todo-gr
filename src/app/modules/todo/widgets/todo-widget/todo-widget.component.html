@@ -5,7 +5,7 @@
 </form>
 
 <ul>
-  <li *ngFor="let todo of todoList">
+  <li *ngFor="let todo of todoList$ | async">
     <!-- {{ todo | json }} -->
     <input
       type="checkbox"
@@ -18,3 +18,4 @@
     <span (click)="onRemove(todo.id)">Remove!</span>
   </li>
 </ul>
+<span *ngIf="loading$ | async"><b><i>LOADING...</i></b></span>

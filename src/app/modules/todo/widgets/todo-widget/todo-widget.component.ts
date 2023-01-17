@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ITodo } from 'src/app/todo';
-import { BACKEND_BASE_DOMAIN } from 'src/env';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ITodo } from 'src/app/modules/todo/interfaces/todo';
+import { TodoService } from '../../services/todo.service';
 
 @Component({
   selector: 'app-todo-widget',
@@ -12,56 +12,31 @@ import { BACKEND_BASE_DOMAIN } from 'src/env';
 export class TodoWidgetComponent implements OnInit {
 
   public title = ''
-  public todoList!: ITodo[]
-  private length = this.todoList?.length
+  public todoList$!: Observable<ITodo[]>;
+  public loading$!: Observable<boolean>;
 
   constructor(
-    private httpClient: HttpClient,
-    private cdr: ChangeDetectorRef,
+    private todoService: TodoService,
   ) { }
 
-
-
   ngOnInit(): void {
-    console.log('DoInit');
-    this.httpClient.get<ITodo[]>(BACKEND_BASE_DOMAIN + 'todo')
-      .subscribe(todoList => {
-        this.todoList = todoList
-        this.cdr.markForCheck()
-      })
+    this.todoList$ = this.todoService.entities$
+    this.loading$ = this.todoService.loading$
+    this.todoService.getAll()
   }
 
   onCreate() {
     if (this.title) {
-      this.httpClient.post<ITodo>(
-        BACKEND_BASE_DOMAIN + 'todo',
-        { title: this.title }
-      )
-        .subscribe({
-          next: todo => this.todoList.push(todo),
-          complete: () => {
-            this.title = ''
-            this.cdr.markForCheck()
-           },
-        })
+      this.todoService.add(this.title)
+      this.title = ''
     }
   }
 
   onRemove(id: number) {
-    this.httpClient.delete<void>(BACKEND_BASE_DOMAIN + 'todo/' + id)
-      .subscribe(
-        () => this.todoList = this.todoList.filter(todo => todo.id !== id), null, () => this.cdr.markForCheck()
-      )
+    this.todoService.remove(id)
   }
 
   onComplete(todo: ITodo) {
-    this.httpClient.patch<ITodo>(
-    BACKEND_BASE_DOMAIN + 'todo/' + todo.id,
-      { isCompleted: !todo.isCompleted }
-    )
-      .subscribe((updatedTodo) => {
-        this.todoList = this.todoList.map(todo => todo.id !== updatedTodo.id ? todo : updatedTodo)
-    }, null, () => this.cdr.markForCheck())
-
+    this.todoService.toggleCompleted(todo)
   }
 }
